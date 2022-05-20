@@ -1,5 +1,5 @@
 import { FC, ReactNode, useReducer } from 'react';
-import { UIContext, UIREducer } from './';
+import { UIContext, uiReducer } from '.';
 export interface UIstate {
   sidemenuOpen: boolean;
 }
@@ -13,8 +13,8 @@ const UI_INITIAL_STATE: UIstate = {
 }
 
 export const UIProvider: FC<Props> = ({ children }) => {
-  
-  const [state, dispatch] = useReducer(UIREducer, UI_INITIAL_STATE);
+
+  const [state, dispatch] = useReducer(uiReducer, UI_INITIAL_STATE);
 
   return (
     <UIContext.Provider value={{
