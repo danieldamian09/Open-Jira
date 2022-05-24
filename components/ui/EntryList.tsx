@@ -1,8 +1,21 @@
+import React, { FC, useContext, useMemo } from 'react'
 import { List, Paper } from '@mui/material'
-import React from 'react'
 import { EntryCard } from './';
+import { EntryStatus } from '../../interfaces';
+import { EntriesContext } from '../../context/entries/';
 
-export const EntryList = () => {
+interface Props {
+  status: EntryStatus
+}
+
+export const EntryList: FC<Props> = ({ status }) => {
+  
+  const { entries } = useContext(EntriesContext)
+  
+  // Filtar las entradas por el estado
+  const entriesByStatus = useMemo(() =>  entries.filter(entry => entry.status === status) , [entries]) 
+    
+   
 
   // overflowY: 'scroll',
 
@@ -11,14 +24,10 @@ export const EntryList = () => {
     <div>
       <Paper sx={{ height: 'calc(100vh - 180px)', overflowY: 'scroll',  backgroundColor: 'transparent', padding: '1px 5px' }}>
         {/* TODO: cambiara si estoy haciano drag o no */}
-        <List sx={{opacity: '1'}}>
-          <EntryCard />
-          <EntryCard />
-          <EntryCard />
-          <EntryCard />
-          <EntryCard />
-          <EntryCard />
-          <EntryCard />
+        <List sx={{ opacity: '1' }}>
+          {entriesByStatus.map(entry => (
+              <EntryCard key={entry._id} entry={entry} />
+            ))}
         </List>
       </Paper>
     </div>
