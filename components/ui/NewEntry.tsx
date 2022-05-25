@@ -1,24 +1,28 @@
-import {ChangeEvent, useState} from "react";
+import {ChangeEvent, useState, useContext} from "react";
 import {Box, Button, TextField} from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 // import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import {EntriesContext} from "../../context/entries";
 
 export const NewEntry = () => {
-  const [isAdding, setIsAdding] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-  const [touched, seTouched] = useState(false);
+	const {addNewEntry} = useContext(EntriesContext);
 
-  const onTextFieldChange = (event:ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value);
-  }
+	const [isAdding, setIsAdding] = useState(false);
+	const [inputValue, setInputValue] = useState("");
+	const [touched, setTouched] = useState(false);
 
-  const onSave = () => {
-    if (inputValue.length === 0) return;
-    
-    console.log(inputValue);
+	const onTextFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
+		setInputValue(event.target.value);
+	};
 
-  }
+	const onSave = () => {
+		if (inputValue.length === 0) return;
+		addNewEntry(inputValue);
+		setIsAdding(false);
+		setTouched(false);
+		setInputValue("");
+	};
 
 	return (
 		<Box sx={{marginBottom: 2, paddingX: 2}}>
@@ -31,23 +35,28 @@ export const NewEntry = () => {
 						autoFocus
 						multiline
 						label="Nueva entrada"
-            helperText={ inputValue.length <= 0 && touched && "Ingrese un valor"}
-            error={ inputValue.length <= 0 && touched }
-            value={inputValue}
-            onChange={onTextFieldChange}
-            onBlur={() => seTouched(true)}
+						helperText={inputValue.length <= 0 && touched && "Ingrese un valor"}
+						error={inputValue.length <= 0 && touched}
+						value={inputValue}
+						onChange={onTextFieldChange}
+						onBlur={() => setTouched(true)}
 					/>
 
 					<Box display="flex" justifyContent="space-between">
 						<Button
-              variant="text"
-              onClick={() => setIsAdding(false)}
+							variant="text"
+							onClick={() => setIsAdding(false)}
 							// color="secondary"
 							// endIcon={<HighlightOffIcon />}
 						>
 							Cancelar
 						</Button>
-						<Button variant="outlined" color="secondary" endIcon={<SaveIcon />} onClick={onSave}>
+						<Button
+							variant="outlined"
+							color="secondary"
+							endIcon={<SaveIcon />}
+							onClick={onSave}
+						>
 							Guardar
 						</Button>
 					</Box>
@@ -57,8 +66,8 @@ export const NewEntry = () => {
 					<Button
 						startIcon={<AddCircleOutlineIcon />}
 						fullWidth
-              variant="outlined"
-              onClick={() => setIsAdding(true)}
+						variant="outlined"
+						onClick={() => setIsAdding(true)}
 					>
 						Agregar Tarea
 					</Button>

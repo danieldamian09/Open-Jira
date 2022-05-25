@@ -3,7 +3,8 @@ import { Entry } from '../../interfaces';
 
 
 interface ContextProps {
-  entries: Entry[]; // falta el tipo de dato del array
+  entries: Entry[]; 
+  addNewEntry: (description: string) => void;
 }
 
 
