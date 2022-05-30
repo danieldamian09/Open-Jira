@@ -1,4 +1,4 @@
-import React, {FC, useContext, useMemo} from "react";
+import React, {DragEvent, FC, useContext, useMemo} from "react";
 import {List, Paper} from "@mui/material";
 import {EntryCard} from "./";
 import {EntryStatus} from "../../interfaces";
@@ -17,11 +17,21 @@ export const EntryList: FC<Props> = ({status}) => {
 		[entries]
 	);
 
-	// overflowY: 'scroll',
+	// Drag and drop
+	const allowDrop = (event: DragEvent<HTMLDivElement>) => {
+		event.preventDefault();
+	};
+
+	const onDropEntry = (event: DragEvent<HTMLDivElement>) => {
+		// console.log(event);
+		// * Extraer el ID que le asignamos al elemento arrastrado "text" en el onDragStart
+		const id = event.dataTransfer.getData("text");
+		console.log(id);
+	};
 
 	return (
 		// TODO: aqui haremos drop
-		<div>
+		<div onDrop={onDropEntry} onDragOver={allowDrop}>
 			<Paper
 				sx={{
 					height: "calc(100vh - 180px)",
