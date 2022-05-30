@@ -1,6 +1,7 @@
-import { DragEvent, FC } from 'react';
+import { DragEvent, FC, useContext } from 'react';
 import { Card, CardActionArea, CardActions, CardContent, Typography } from '@mui/material'
 import { Entry } from '../../interfaces';
+import { UIContext } from '../../context/ui';
 
 interface Props {
   entry: Entry
@@ -8,6 +9,8 @@ interface Props {
 
 export const EntryCard: FC<Props> = ({ entry }) => {
   
+  const {startDraging, endDraging} = useContext(UIContext)
+
   const onDragStart = (event: DragEvent<HTMLDivElement>) => {
     // Informacion de cual es el elemento que se va a mover
     // console.log(event)
@@ -15,11 +18,13 @@ export const EntryCard: FC<Props> = ({ entry }) => {
     event.dataTransfer.setData('text', entry._id)
 
     //TODO: modificar el estado para indicar que se esta arrastrando
+    startDraging()
 
   }
 
   const onDragEnd = () => {
   // TODO: terminar de arrastrar el elemento
+    endDraging()
     
   
   }
