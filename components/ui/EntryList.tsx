@@ -12,8 +12,8 @@ interface Props {
 }
 
 export const EntryList: FC<Props> = ({status}) => {
-	const {entries} = useContext(EntriesContext);
-	const {isDraging} = useContext(UIContext);
+	const {entries, updateEntry} = useContext(EntriesContext);
+	const {isDraging, endDraging} = useContext(UIContext);
 
 	// Filtar las entradas por el estado
 	const entriesByStatus = useMemo(
@@ -31,6 +31,15 @@ export const EntryList: FC<Props> = ({status}) => {
 		// * Extraer el ID que le asignamos al elemento arrastrado "text" en el onDragStart
 		const id = event.dataTransfer.getData("text");
 		console.log(id);
+
+		// * Busco en todas las entradas la entrada que es igual al id que estoy arrastrando
+		const entry = entries.find((entry) => entry._id === id)!;
+
+		// * Actualizo el estado de la entrada
+		entry.status = status;
+		// * Llamamos la accion para actualizar el estado de la entrada viene del EntriesContext
+		updateEntry(entry);
+		endDraging();
 	};
 
 	return (
