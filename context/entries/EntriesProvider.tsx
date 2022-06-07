@@ -11,29 +11,7 @@ interface Props {
 }
 
 const Entries_INITIAL_STATE: EntriesState = {
-	entries: [
-		{
-			_id: uuidv4(),
-			description: 'Pending: Esta es la descripcion de la tarea 1',
-			status: 'pending',
-			createAt: Date.now()
-			
-		},
-		{
-			_id: uuidv4(),
-			description: 'Progress: Esta es la descripcion de la tarea 2',
-			status: 'progress',
-			createAt: Date.now()-100000
-			
-		},
-		{
-			_id: uuidv4(),
-			description: 'Finished: Esta es la descripcion de la tarea 3',
-			status: 'finished',
-			createAt: Date.now()-100
-			
-		},
-	],
+	entries: [],
 };
 
 export const EntriesProvider: FC<Props> = ({children}) => {
