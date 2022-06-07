@@ -1,7 +1,7 @@
 import mongoose, {Model, Schema} from "mongoose";
 import {Entry} from "../interfaces";
 
-interface IEntry extends Entry {}
+export interface IEntry extends Entry {}
 
 const entrySchema = new Schema({
 	// Definir todas las propiedades que mis documentos van a tener
@@ -19,7 +19,6 @@ const entrySchema = new Schema({
 
 // Si ya esta defino el esqueno no es necesario volver a definir el esquema porque ya lo tengo:
 const EntryModel: Model<IEntry> =
-  mongoose.models.Entry || mongoose.model("Entry", entrySchema);
-  
+	mongoose.models.Entry || mongoose.model("Entry", entrySchema);
 
 export default EntryModel;
