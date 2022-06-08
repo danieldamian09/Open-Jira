@@ -18,16 +18,23 @@ const Entries_INITIAL_STATE: EntriesState = {
 export const EntriesProvider: FC<Props> = ({children}) => {
 	const [state, dispatch] = useReducer(entriesReducer, Entries_INITIAL_STATE);
 
-	// Agregar nueva entrada
-	const addNewEntry = (description: string) => {
-		const newEntry: Entry = {
-			_id: uuidv4(),
-			description,
-			createAt: Date.now(),
-			status: 'pending'
-		}
+	// Agregar nueva entrada 
+	const addNewEntry = async(description: string) => {
 
-		dispatch({type: '[Entry] - Add-Entry', payload: newEntry})
+		// Para agregar la nueva entreda solo desde el frontend
+		// const newEntry: Entry = {
+		// 	_id: uuidv4(),
+		// 	description,
+		// 	createAt: Date.now(),
+		// 	status: 'pending'
+		// }
+
+		// Para agregar la nueva entreda por medio de la API: pages/api/entries/index.ts
+		// Si este codigo falla no va a actualizar el state 
+		const {data} = await entriesApi.post<Entry>('/entries', {description});
+		// Si este codigo falla no va a actualizar el state puede ser porque no este levantada la base de datos
+
+		dispatch({type: '[Entry] - Add-Entry', payload: data})
 	
 	}
 
