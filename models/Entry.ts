@@ -6,7 +6,7 @@ export interface IEntry extends Entry {}
 const entrySchema = new Schema({
 	// Definir todas las propiedades que mis documentos van a tener
 	description: {type: String, required: true},
-	createAt: {type: Number},
+	createdAt: {type: Number},
 	status: {
 		type: String,
 		enum: {
