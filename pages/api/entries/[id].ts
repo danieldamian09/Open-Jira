@@ -31,6 +31,7 @@ export default function handler(
 }
 
 const upDateEntry = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
+
 	const {id} = req.query;
 
 	await db.connect();
@@ -50,13 +51,26 @@ const upDateEntry = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 	// Si la description y el estado no viene en el request, tomar el valor de la entrada que esta en entryUpDate
 	const {description = entryUpDate.description, status = entryUpDate.status} =
 		req.body;
-
-	// Actualizar la entrada
+	
+	try {
+			// Actualizar la entrada
 	const upDateEntry = await Entry.findByIdAndUpdate(
 		id,
 		{description, status},
 		{runValidators: true, new: true}
-	);
+		);
+		await db.disconnect();
+		res.status(200).json(upDateEntry!);
 
-	res.status(200).json(upDateEntry!);
+	// Otra forma de actualizar la entrada
+	// entryUpDate.description = description;
+	// entryUpDate.status = status;
+	// await entryUpDate.save();
+	} catch (error: any) {
+		console.log(error);
+		await db.disconnect();
+		res.status(400).json({message: error.errors.status.message});
+	}
+
+	
 };
