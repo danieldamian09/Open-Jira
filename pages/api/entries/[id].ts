@@ -30,6 +30,8 @@ export default function handler(
 	}
 }
 
+
+// Actualizar una entrada
 const upDateEntry = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
 	const {id} = req.query;

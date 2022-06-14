@@ -38,10 +38,20 @@ export const EntriesProvider: FC<Props> = ({children}) => {
 	
 	}
 
-	const updateEntry = (entry:Entry) => {
-		dispatch({type:'[Entry] - Entry-Update', payload: entry})
+	// Actualizar entrada
+	const updateEntry = async({_id, description, status}: Entry) => {
+		
+		try {
+			// Hago el envio al endpoint que me retorna la entrada actualizada "Toda la data en el cuerpo" por ID por medio de un PUT
+			const {data} = await entriesApi.put<Entry>(`/entries/${_id}`, {description, status});
+			// Actualiza la entrda en el frontend
+			dispatch({type:'[Entry] - Entry-Update', payload: data})
+		} catch (error) {
+			console.log(error);
+		}
+		
 	}
-
+	
 	// Peticion para obtener las entradas
 	const refrehEntries = async() => {
 		const {data} = await entriesApi.get<Entry[]>('/entries')
