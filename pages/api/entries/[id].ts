@@ -25,15 +25,16 @@ export default function handler(
 		case "PUT":
 			return upDateEntry(req, res);
 
+		case "GET":
+			return getEntry(req, res);
+
 		default:
 			return res.status(400).json({message: "Metodo no existe"});
 	}
 }
 
-
-// Actualizar una entrada
+// Actualizar una entrada segun el id methodo PUT
 const upDateEntry = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
-
 	const {id} = req.query;
 
 	await db.connect();
@@ -53,26 +54,41 @@ const upDateEntry = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 	// Si la description y el estado no viene en el request, tomar el valor de la entrada que esta en entryUpDate
 	const {description = entryUpDate.description, status = entryUpDate.status} =
 		req.body;
-	
+
 	try {
-			// Actualizar la entrada
-	const upDateEntry = await Entry.findByIdAndUpdate(
-		id,
-		{description, status},
-		{runValidators: true, new: true}
+		// Actualizar la entrada
+		const upDateEntry = await Entry.findByIdAndUpdate(
+			id,
+			{description, status},
+			{runValidators: true, new: true}
 		);
 		await db.disconnect();
 		res.status(200).json(upDateEntry!);
 
-	// Otra forma de actualizar la entrada
-	// entryUpDate.description = description;
-	// entryUpDate.status = status;
-	// await entryUpDate.save();
+		// Otra forma de actualizar la entrada
+		// entryUpDate.description = description;
+		// entryUpDate.status = status;
+		// await entryUpDate.save();
 	} catch (error: any) {
 		console.log(error);
 		await db.disconnect();
 		res.status(400).json({message: error.errors.status.message});
 	}
+};
 
-	
+// Obtener una entrada segun el id methodo GET
+const getEntry = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
+	const {id} = req.query;
+
+	await db.connect();
+
+	const entriByID = await Entry.findById(id);
+
+	await db.disconnect();
+
+	if (!entriByID) {
+		return res.status(400).json({message: "No existe una entrada con ese id" + id});
+	}
+
+	res.status(200).json(entriByID);
 };
