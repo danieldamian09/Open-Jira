@@ -30,7 +30,7 @@ export const EntryList: FC<Props> = ({status}) => {
 		// console.log(event);
 		// * Extraer el ID que le asignamos al elemento arrastrado "text" en el onDragStart
 		const id = event.dataTransfer.getData("text");
-		console.log(id);
+		// console.log(id);
 
 		// * Busco en todas las entradas la entrada que es igual al id que estoy arrastrando
 		const entry = entries.find((entry) => entry._id === id)!;

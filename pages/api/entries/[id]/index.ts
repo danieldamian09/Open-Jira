@@ -1,7 +1,6 @@
-import mongoose from "mongoose";
 import type {NextApiRequest, NextApiResponse} from "next";
-import {db} from "../../../database";
-import {Entry, IEntry} from "../../../models";
+import {db} from "../../../../database";
+import {Entry, IEntry} from "../../../../models";
 
 type Data = {message: string} | IEntry;
 
@@ -11,15 +10,15 @@ export default function handler(
 ) {
 	// Como ver el id que me esta llegando en el request
 	// console.log(req.query)
-	const {id} = req.query;
+	// const {id} = req.query;
 
 	// Obtener la entrada segun el ID
 
 	// Validaciones antes de llegar a la base de datos (para cualquier peticion)
-	if (!mongoose.isValidObjectId(id)) {
-		// Si el id es valido no es valido
-		return res.status(400).json({message: "El id no es valido " + id});
-	}
+	// if (!mongoose.isValidObjectId(id)) {
+	// 	// Si el id es valido no es valido
+	// 	return res.status(400).json({message: "El id no es valido " + id});
+	// }
 
 	switch (req.method) {
 		case "PUT":
@@ -87,7 +86,9 @@ const getEntry = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 	await db.disconnect();
 
 	if (!entriByID) {
-		return res.status(400).json({message: "No existe una entrada con ese id" + id});
+		return res
+			.status(400)
+			.json({message: "No existe una entrada con ese id" + id});
 	}
 
 	res.status(200).json(entriByID);
