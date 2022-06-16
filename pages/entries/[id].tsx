@@ -1,3 +1,4 @@
+import { ChangeEvent, useState } from 'react';
 import {
   capitalize,
 	Button,
@@ -22,13 +23,34 @@ import {EntryStatus} from "../../interfaces";
 const validStatus: EntryStatus[] = ["pending", "in-progress", "finished"];
 
 export const EntryPage = () => {
+
+  const [inputValue, setInputValue] = useState('')
+  const [status, setStatus] = useState<EntryStatus>('pending')
+  const [touched, setTouched] = useState(false)
+
+  // CUando el input de nueva entrada cambie
+  const onInputValueChange = (event: ChangeEvent<HTMLInputElement>) => {
+		setInputValue(event.target.value);
+  };
+  
+  // Cuando el radio button cambie
+  const onStatusChange = (event: ChangeEvent<HTMLInputElement>) => {
+    console.log(event.target.value);
+    setStatus(event.target.value as EntryStatus);
+  }
+
+  // Salvar entrada
+  const onSave = () => {
+    console.log({inputValue, status});
+  }
+
 	return (
 		<Layout title="... .... ...">
 			<Grid container justifyContent="center" sx={{marginTop: 2}}>
 				<Grid item xs={12} sm={8} md={6}>
 					<Card>
 						<CardHeader
-							title="Entrda:"
+							title={`Entrada: ${inputValue}`}
 							subheader={`Creada hace: .... minutos`}
 						/>
 						<CardContent>
@@ -38,13 +60,17 @@ export const EntryPage = () => {
 								placeholder="Nueva Entrada"
 								autoFocus
 								multiline
-								label="Nueva Entrada"
+                label="Nueva Entrada"
+                value={inputValue}
+                onChange={onInputValueChange}
 							/>
 
 							<FormControl>
 								<FormLabel>Estado:</FormLabel>
                 <RadioGroup
                   row
+                  value={status}
+                  onChange={onStatusChange}
                 >
 									{validStatus.map((option) => (
 										<FormControlLabel
@@ -61,7 +87,8 @@ export const EntryPage = () => {
 							<Button
 								startIcon={<SaveOutlinedIcon />}
 								variant="contained"
-								fullWidth
+                fullWidth
+                onClick={onSave}
 							>
 								Save
 							</Button>
