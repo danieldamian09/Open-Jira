@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useMemo, useState } from 'react';
 import {
   capitalize,
 	Button,
@@ -26,7 +26,11 @@ export const EntryPage = () => {
 
   const [inputValue, setInputValue] = useState('')
   const [status, setStatus] = useState<EntryStatus>('pending')
-  const [touched, setTouched] = useState(false)
+	const [touched, setTouched] = useState(false)
+	
+	// Validar el input es case de que esta vacio y haya sido tocado
+	const isNotValid = useMemo(() => inputValue.length <= 0 && touched, [inputValue, touched])
+
 
   // CUando el input de nueva entrada cambie
   const onInputValueChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -35,7 +39,8 @@ export const EntryPage = () => {
   
   // Cuando el radio button cambie
   const onStatusChange = (event: ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value);
+		console.log(event.target.value);
+		// Para  enviar el status debo indicar que es de tipo EntryStatus
     setStatus(event.target.value as EntryStatus);
   }
 
@@ -61,8 +66,11 @@ export const EntryPage = () => {
 								autoFocus
 								multiline
                 label="Nueva Entrada"
-                value={inputValue}
-                onChange={onInputValueChange}
+								value={inputValue}
+								onBlur={() => setTouched(true)}
+								onChange={onInputValueChange}
+								helperText={isNotValid ? 'El campo no puede estar vacio' : ''}
+								error={isNotValid}
 							/>
 
 							<FormControl>
@@ -88,7 +96,8 @@ export const EntryPage = () => {
 								startIcon={<SaveOutlinedIcon />}
 								variant="contained"
                 fullWidth
-                onClick={onSave}
+								onClick={onSave}
+								disabled={inputValue.length <= 0}
 							>
 								Save
 							</Button>
