@@ -1,4 +1,5 @@
 import { DragEvent, FC, useContext } from 'react';
+import { useRouter } from 'next/router';
 import { Card, CardActionArea, CardActions, CardContent, Typography } from '@mui/material'
 import { Entry } from '../../interfaces';
 import { UIContext } from '../../context/ui';
@@ -9,7 +10,10 @@ interface Props {
 
 export const EntryCard: FC<Props> = ({ entry }) => {
   
-  const {startDraging, endDraging} = useContext(UIContext)
+  const { startDraging, endDraging } = useContext(UIContext)
+  
+  // Router de NextJS
+  const router = useRouter()
 
   const onDragStart = (event: DragEvent<HTMLDivElement>) => {
     // Informacion de cual es el elemento que se va a mover
@@ -19,14 +23,15 @@ export const EntryCard: FC<Props> = ({ entry }) => {
 
     //TODO: modificar el estado para indicar que se esta arrastrando
     startDraging()
-
   }
 
   const onDragEnd = () => {
   // TODO: terminar de arrastrar el elemento
-    endDraging()
-    
-  
+    endDraging()  
+  }
+
+  const onClickRedirect = () => {
+    router.push(`/entries/${entry._id}`)
   }
 
   return (
@@ -36,6 +41,7 @@ export const EntryCard: FC<Props> = ({ entry }) => {
       draggable
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
+      onClick={onClickRedirect}
     >
       <CardActionArea>
         <CardContent>
