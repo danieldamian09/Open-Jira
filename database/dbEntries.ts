@@ -13,6 +13,7 @@ export const getEntrieByID = async (id: string): Promise<IEntry | null> => {
   const entry = await Entry.findById(id).lean();
   await db.disconnect();
 
-  return entry;
+  // Evitar la serealizacion del id que viene de mongo
+  return JSON.parse(JSON.stringify(entry));
 
 }

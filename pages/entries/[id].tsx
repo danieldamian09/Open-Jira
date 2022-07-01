@@ -28,12 +28,12 @@ interface Props {
 	entry: Entry
 }
 
-export const EntryPage: FC<Props> = (props) => {
+export const EntryPage: FC<Props> = ({entry}) => {
 	
-	console.log(props)
+	console.log({entry});
 
-  const [inputValue, setInputValue] = useState('')
-  const [status, setStatus] = useState<EntryStatus>('pending')
+  const [inputValue, setInputValue] = useState(entry.description)
+  const [status, setStatus] = useState<EntryStatus>(entry.status)
 	const [touched, setTouched] = useState(false)
 	
 	// Validar el input es case de que esta vacio y haya sido tocado
@@ -58,13 +58,13 @@ export const EntryPage: FC<Props> = (props) => {
   }
 
 	return (
-		<Layout title="... .... ...">
+		<Layout title={inputValue.substring(0,10) + "..."}>
 			<Grid container justifyContent="center" sx={{marginTop: 2}}>
 				<Grid item xs={12} sm={8} md={6}>
 					<Card>
 						<CardHeader
-							title={`Entrada: ${inputValue}`}
-							subheader={`Creada hace: .... minutos`}
+							title={`Entrada:`}
+							subheader={`Creada hace: ${entry.createdAt} minutos`}
 						/>
 						<CardContent>
 							<TextField
@@ -138,6 +138,7 @@ export const getServerSideProps: GetServerSideProps = async ({params}) => {
 	
 	const entry =  await dbEntries.getEntrieByID(id);
 
+	// Si el id no es valido no retornar la pagina, redireccionanda a la pagina de Home
 	if (!entry) {
 		return {
 			redirect: {
