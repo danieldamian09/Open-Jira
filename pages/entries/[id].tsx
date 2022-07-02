@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useMemo, useState } from 'react';
+import { ChangeEvent, FC, useContext, useMemo, useState } from 'react';
 import { GetServerSideProps } from 'next'
 import {
   capitalize,
@@ -18,6 +18,8 @@ import {
 } from "@mui/material";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+
+import { EntriesContext } from '../../context/entries';
 import { dbEntries } from '../../database';
 import {Layout} from "../../components/layouts";
 import {EntryStatus, Entry} from "../../interfaces";
@@ -30,7 +32,7 @@ interface Props {
 
 export const EntryPage: FC<Props> = ({entry}) => {
 	
-	console.log({entry});
+	const {updateEntry} = useContext(EntriesContext)
 
   const [inputValue, setInputValue] = useState(entry.description)
   const [status, setStatus] = useState<EntryStatus>(entry.status)
@@ -53,8 +55,20 @@ export const EntryPage: FC<Props> = ({entry}) => {
   }
 
   // Salvar entrada
-  const onSave = () => {
-    console.log({inputValue, status});
+	const onSave = () => {
+		
+		// Validar que el input no este vacio
+		if (inputValue.trim().length === 0) return;
+		
+		// Actualizar el entry
+		const updatedEntry: Entry = {
+			...entry,
+			status,
+			description: inputValue,
+		}
+
+		// Actualizar el entry en la base de datos
+		updateEntry(updatedEntry)
   }
 
 	return (
