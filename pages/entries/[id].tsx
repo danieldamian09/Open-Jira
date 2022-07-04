@@ -1,7 +1,7 @@
-import { ChangeEvent, FC, useContext, useMemo, useState } from 'react';
-import { GetServerSideProps } from 'next'
+import {ChangeEvent, FC, useContext, useMemo, useState} from "react";
+import {GetServerSideProps} from "next";
 import {
-  capitalize,
+	capitalize,
 	Button,
 	Card,
 	CardActions,
@@ -14,65 +14,66 @@ import {
 	Radio,
 	RadioGroup,
 	TextField,
-  IconButton,
+	IconButton,
 } from "@mui/material";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 
-import { EntriesContext } from '../../context/entries';
-import { dbEntries } from '../../database';
+import {EntriesContext} from "../../context/entries";
+import {dbEntries} from "../../database";
 import {Layout} from "../../components/layouts";
 import {EntryStatus, Entry} from "../../interfaces";
 
 const validStatus: EntryStatus[] = ["pending", "in-progress", "finished"];
 
 interface Props {
-	entry: Entry
+	entry: Entry;
 }
 
 export const EntryPage: FC<Props> = ({entry}) => {
 	
-	const {updateEntry} = useContext(EntriesContext)
+	const {updateEntry} = useContext(EntriesContext);
 
-  const [inputValue, setInputValue] = useState(entry.description)
-  const [status, setStatus] = useState<EntryStatus>(entry.status)
-	const [touched, setTouched] = useState(false)
-	
+	const [inputValue, setInputValue] = useState(entry.description);
+	const [status, setStatus] = useState<EntryStatus>(entry.status);
+	const [touched, setTouched] = useState(false);
+
 	// Validar el input es case de que esta vacio y haya sido tocado
-	const isNotValid = useMemo(() => inputValue.length <= 0 && touched, [inputValue, touched])
+	const isNotValid = useMemo(
+		() => inputValue.length <= 0 && touched,
+		[inputValue, touched]
+	);
 
-
-  // CUando el input de nueva entrada cambie
-  const onInputValueChange = (event: ChangeEvent<HTMLInputElement>) => {
+	// CUando el input de nueva entrada cambie
+	const onInputValueChange = (event: ChangeEvent<HTMLInputElement>) => {
 		setInputValue(event.target.value);
-  };
-  
-  // Cuando el radio button cambie
-  const onStatusChange = (event: ChangeEvent<HTMLInputElement>) => {
+	};
+
+	// Cuando el radio button cambie
+	const onStatusChange = (event: ChangeEvent<HTMLInputElement>) => {
 		console.log(event.target.value);
 		// Para  enviar el status debo indicar que es de tipo EntryStatus
-    setStatus(event.target.value as EntryStatus);
-  }
+		setStatus(event.target.value as EntryStatus);
+	};
 
-  // Salvar entrada
+	// Salvar entrada
 	const onSave = () => {
-		
 		// Validar que el input no este vacio
 		if (inputValue.trim().length === 0) return;
-		
+
 		// Actualizar el entry
 		const updatedEntry: Entry = {
 			...entry,
 			status,
 			description: inputValue,
-		}
+		};
 
 		// Actualizar el entry en la base de datos
-		updateEntry(updatedEntry)
-  }
+		updateEntry(updatedEntry, true);
+	};
 
 	return (
-		<Layout title={inputValue.substring(0,10) + "..."}>
+		<Layout title={inputValue.substring(0, 10) + "..."}>
 			<Grid container justifyContent="center" sx={{marginTop: 2}}>
 				<Grid item xs={12} sm={8} md={6}>
 					<Card>
@@ -87,21 +88,17 @@ export const EntryPage: FC<Props> = ({entry}) => {
 								placeholder="Nueva Entrada"
 								autoFocus
 								multiline
-                label="Nueva Entrada"
+								label="Nueva Entrada"
 								value={inputValue}
 								onBlur={() => setTouched(true)}
 								onChange={onInputValueChange}
-								helperText={isNotValid ? 'El campo no puede estar vacio' : ''}
+								helperText={isNotValid ? "El campo no puede estar vacio" : ""}
 								error={isNotValid}
 							/>
 
 							<FormControl>
 								<FormLabel>Estado:</FormLabel>
-                <RadioGroup
-                  row
-                  value={status}
-                  onChange={onStatusChange}
-                >
+								<RadioGroup row value={status} onChange={onStatusChange}>
 									{validStatus.map((option) => (
 										<FormControlLabel
 											key={option}
@@ -117,7 +114,7 @@ export const EntryPage: FC<Props> = ({entry}) => {
 							<Button
 								startIcon={<SaveOutlinedIcon />}
 								variant="contained"
-                fullWidth
+								fullWidth
 								onClick={onSave}
 								disabled={inputValue.length <= 0}
 							>
@@ -126,48 +123,45 @@ export const EntryPage: FC<Props> = ({entry}) => {
 						</CardActions>
 					</Card>
 				</Grid>
-      </Grid>
-      <IconButton
-        sx={{
-          position: 'fixed',
-          bottom: 30,
-          right: 30,
-          backgroundColor: 'error.dark',
-        }}
-      >
-        <DeleteOutlineOutlinedIcon />
-      </IconButton>
+			</Grid>
+			<IconButton
+				sx={{
+					position: "fixed",
+					bottom: 30,
+					right: 30,
+					backgroundColor: "error.dark",
+				}}
+			>
+				<DeleteOutlineOutlinedIcon />
+			</IconButton>
 		</Layout>
 	);
 };
 
-
 // You should use getServerSideProps when:
 // - Only if you need to pre-render a page whose data must be fetched at request time
 export const getServerSideProps: GetServerSideProps = async ({params}) => {
-	
 	// Obtener el id de la entrada
 	// console.log(ctx.params);
-	const { id } = params as { id: string };
-	
-	const entry =  await dbEntries.getEntrieByID(id);
+	const {id} = params as {id: string};
+
+	const entry = await dbEntries.getEntrieByID(id);
 
 	// Si el id no es valido no retornar la pagina, redireccionanda a la pagina de Home
 	if (!entry) {
 		return {
 			redirect: {
-				destination: '/',
+				destination: "/",
 				permanent: false,
-			}
-		}
+			},
+		};
 	}
 
 	return {
 		props: {
-			entry
-		}
-	}
-}
-
+			entry,
+		},
+	};
+};
 
 export default EntryPage;
